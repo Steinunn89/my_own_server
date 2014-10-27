@@ -15,6 +15,48 @@ loop do                                             # Server runs forever
   end
   puts lines                                        # Output the full request to stdout
 
-  client.puts(Time.now.ctime)                       # Output the current time to the client
-  client.close                                      # Disconnect from the client
+
+filename = lines[0].gsub(/GET \//, '').gsub(/\ HTTP.*/, '')
+
+puts filename
+
+headers = []
+
+if File.exists?(filename)
+
+	body = File.read(filename)
+
+	headers << "HTTP/1.1 200 OK"
+
+	if filename =~ /.css/ 
+  		filetype = "text/css"
+
+  	elsif filename =~ /.html/ 
+  		filetype = "text/html"
+  	else
+  		filetype = "text/plain"
+  	end
+
+	headers << "Content-Type: #{filetype}"
+	
+
+else
+
+  	
+
+	headers << "HTTP/1.1 404 Not Found"
+	headers <<"Content-Type: text/plain"
+	
+end
+
+headers << "Content-Length: #{body.size}" 
+headers << "Connection: close"
+
+	
+headers = headers.join("\r\n")
+response = [headers, body].join("\r\n\r\n")
+	
+
+client.puts(response) 
+client.close                                  
 end
