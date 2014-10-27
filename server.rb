@@ -13,7 +13,8 @@ loop do                                             # Server runs forever
   while (line = client.gets.chomp) && !line.empty?  # Read the request and collect it until it's empty
     lines << line
   end
-  puts lines                                        # Output the full request to stdout
+ 
+ puts lines                                        # Output the full request to stdout
 
 
 filename = lines[0].gsub(/GET \//, '').gsub(/\ HTTP.*/, '')
